@@ -1,0 +1,28 @@
+{
+    "name": "cry/cry-cms-core",
+    "version": "0.0.1",
+    "description": "just Core",
+    "type": "project",
+    "require": {
+        "php": ">=7.3",
+        "cry/cry-cms-html": "1.06",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    }
+    ,
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+    },
+    "license": "free",
+    "autoload": {
+        "psr-4": {
+            "CryCMS\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dmitrii Cry",
+            "email": "cry.int@gmail.com"
+        }
+    ]
+}
