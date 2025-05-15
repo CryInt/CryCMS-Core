@@ -33,11 +33,11 @@ class Template
         $this->config = $config;
 
         if (empty($this->config['template'])) {
-            throw new RuntimeException('Template not specified in config', 1);
+            throw new RuntimeException('Template is not specified in config', 1);
         }
 
         if (!file_exists(DR . '/' . $this->config['template'] . '/content.php')) {
-            throw new RuntimeException('Template "' . $this->config['template'] . '" not exists', 2);
+            throw new RuntimeException('Template "' . $this->config['template'] . '" is not exists', 2);
         }
 
         $this->parseConfigVars();

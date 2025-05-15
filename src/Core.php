@@ -110,13 +110,17 @@ class Core
 
     private function initRouter(): void
     {
-        $this->router = new Router($this->configs['router'], $this->url);
-        $this->moduleParams = $this->router->params;
+        if (array_key_exists('router', $this->configs)) {
+            $this->router = new Router($this->configs['router'], $this->url);
+            $this->moduleParams = $this->router->params;
+        }
     }
 
     private function initTemplate(): void
     {
-        $this->template = new Template($this->configs['template'], $this);
+        if (array_key_exists('template', $this->configs)) {
+            $this->template = new Template($this->configs['template'], $this);
+        }
     }
 
     public function runModule($moduleName = null, $params = [], $echo = false)
