@@ -113,14 +113,20 @@ class Core
         if (array_key_exists('router', $this->configs)) {
             $this->router = new Router($this->configs['router'], $this->url);
             $this->moduleParams = $this->router->params;
+            return;
         }
+
+        throw new RuntimeException('Router is not defined in config', 1);
     }
 
     private function initTemplate(): void
     {
         if (array_key_exists('template', $this->configs)) {
             $this->template = new Template($this->configs['template'], $this);
+            return;
         }
+
+        throw new RuntimeException('Template is not defined in config', 1);
     }
 
     public function runModule($moduleName = null, $params = [], $echo = false)
@@ -129,6 +135,10 @@ class Core
 
         if ($moduleName === null) {
             $moduleName = $this->router->getModule();
+        }
+
+        if ($moduleName === null) {
+            return false;
         }
 
         $params = array_merge(
@@ -160,7 +170,7 @@ class Core
         $modulePath = $this->getModulePath($moduleName);
 
         if (!file_exists($modulePath)) {
-            throw new RuntimeException('Module "' . $moduleName . '" not exists', 1);
+            throw new RuntimeException('Module "' . $moduleName . '" is not exists', 1);
         }
 
         $this->setRunningModule($moduleName);

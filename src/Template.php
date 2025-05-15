@@ -250,7 +250,7 @@ class Template
 
                 $this->fullContent = str_replace('{{' . $one . '}}', '', $this->fullContent);
                 if (!empty($_ENV['DEBUG'])) {
-                    Helpers::apre('no isset content var: ' . $one);
+                    Helpers::apre('Content var: ' . $one . ' is not isset');
                 }
             }
         }
@@ -293,7 +293,7 @@ class Template
             return;
         }
 
-        throw new RuntimeException('Not exist template "' . $template . '" in module "' . $runningModule . '"', 4);
+        throw new RuntimeException('Template "' . $template . '" is not exists in module "' . $runningModule . '"', 4);
     }
 
     public function run(): void
