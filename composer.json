@@ -1,8 +1,9 @@
 {
     "name": "cry/cry-cms-core",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "just Core",
-    "type": "project",
+    "type": "library",
+    "license": "MIT",
     "require": {
         "php": ">=7.3",
         "cry/cry-cms-html": "1.06",
