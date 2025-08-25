@@ -64,7 +64,7 @@ class Core
     public function initAutoload($path): void
     {
         spl_autoload_register(static function ($class) use ($path) {
-            $classPath = DR . '/' . $path . $class . '.php';
+            $classPath = DR . '/' . $path . str_replace('\\', '/', $class) . '.php';
             if (file_exists($classPath)) {
                 require_once $classPath;
             }
