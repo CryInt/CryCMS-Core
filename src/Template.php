@@ -94,7 +94,13 @@ class Template
         }
 
         if ($mayBeLink !== false && strpos($mayBeLink, 'http') === false) {
-            $mayBeLinkWithPath = '/' . $this->config['template'] . $mayBeLink;
+            if (empty($value['absolute']) || $value['absolute'] !== true) {
+                $mayBeLinkWithPath = '/' . $this->config['template'] . $mayBeLink;
+            }
+            else {
+                $mayBeLinkWithPath = $mayBeLink;
+            }
+
             if (file_exists(DR . $mayBeLinkWithPath) === false) {
                 if (!empty($_ENV['DEBUG'])) {
                     Helpers::apre('file not exists: ' . DR . $mayBeLinkWithPath);
