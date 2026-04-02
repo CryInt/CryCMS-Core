@@ -71,6 +71,11 @@ class Core
         });
     }
 
+    public function getUrl(): array
+    {
+        return $this->url;
+    }
+
     public function run(): void
     {
         $this->initRouter();
@@ -214,8 +219,16 @@ class Core
     public function end($withDb = false): void
     {
         if (
-            PHP_SAPI !== 'cli' &&
-            !empty($_ENV['DEBUG']) &&
+            PHP_SAPI !== 'cli'
+            &&
+            (
+                !empty($_ENV['DEBUG']) &&
+                (
+                    $_ENV['DEBUG'] === 'true' ||
+                    $_ENV['DEBUG'] === true
+                )
+            )
+            &&
             (
                 (
                     is_object($this->template) &&
