@@ -3,5 +3,8 @@ namespace CryCMS;
 
 interface ConfigInterface
 {
-    public static function get();
+    /**
+     * @return array<string, mixed>
+     */
+    public static function get(): array;
 }

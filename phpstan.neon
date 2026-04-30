@@ -1,0 +1,9 @@
+parameters:
+    level: 9
+    paths:
+        - src
+    scanFiles:
+        - composer.json
+    bootstrapFiles:
+        - vendor/autoload.php
+        - constants.php

@@ -4,13 +4,34 @@ namespace CryCMS;
 use Exception;
 use RuntimeException;
 
+/**
+ * @phpstan-type headArray array{
+ *     meta?: array<string, array<string, string>>,
+ *     css?: array<string, array<string, string|bool>>,
+ *     js?: array<string, array<string, string|bool>>,
+ *     favicon?: string,
+ *     canonical?: string,
+ *     link?: array<string, array<string, string>>
+ * }
+ */
+
 class Template
 {
-    protected $core;
+    protected Core $core;
 
-    protected $config;
+    /**
+     * @var array{
+     *     template: string,
+     *     vars: array<string, string>,
+     *     head: headArray
+     * }
+     */
+    protected array $config;
 
-    private $head = [
+    /**
+     * @var headArray
+     */
+    private array $head = [
         'meta'         => [],
         'css'          => [],
         'js'           => [],
@@ -19,15 +40,26 @@ class Template
         'link'         => [],
     ];
 
-    protected $content = '';
+    protected string $content = '';
 
-    protected $fullContent = '';
+    protected string $fullContent = '';
 
-    protected $_vars = [];
+    /**
+     * @var array<string, string>
+     */
+    protected array $_vars = [];
 
-    public $contentOnly = false;
+    public bool $contentOnly = false;
 
-    public function __construct($config, $core)
+    /**
+     * @param array{
+     *     template: string,
+     *     vars: array<string, string>,
+     *     head: headArray
+     * } $config
+     * @param Core $core
+     */
+    public function __construct(array $config, Core $core)
     {
         $this->core = $core;
         $this->config = $config;
@@ -40,18 +72,22 @@ class Template
             throw new RuntimeException('Template "' . $this->config['template'] . '" is not exists', 2);
         }
 
+        if (!defined('DR')) {
+            throw new RuntimeException('DR constant should be defined as server document_root', 4);
+        }
+
         $this->parseConfigVars();
     }
 
     private function parseConfigVars(): void
     {
-        if (!empty($this->config['vars']) && is_array($this->config['vars']) && count($this->config['vars']) > 0) {
+        if (!empty($this->config['vars'])) {
             foreach ($this->config['vars'] as $key => $value) {
                 $this->setVar($key, $value);
             }
         }
 
-        if (!empty($this->config['head']) && is_array($this->config['head']) && count($this->config['head']) > 0) {
+        if (!empty($this->config['head'])) {
             foreach ($this->config['head'] as $type => $values) {
                 if (is_array($values)) {
                     foreach ($values as $key => $value) {
@@ -65,7 +101,7 @@ class Template
         }
     }
 
-    public function setContent($content, $replace = false): void
+    public function setContent(string $content, bool $replace = false): void
     {
         if ($replace === false) {
             $this->content .= $content;
@@ -80,7 +116,13 @@ class Template
         return $this->content;
     }
 
-    public function setHead($type, $key, $value): bool
+    /**
+     * @param string $type
+     * @param string|null $key
+     * @param string|array<string, string|bool> $value
+     * @return bool
+     */
+    public function setHead(string $type, ?string $key, string|array $value): bool
     {
         if (!isset($this->head[$type])) {
             return false;
@@ -93,7 +135,7 @@ class Template
             $mayBeLink = $value;
         }
 
-        if ($mayBeLink !== false && strpos($mayBeLink, 'http') === false) {
+        if (is_string($mayBeLink) && !str_contains($mayBeLink, 'http')) {
             if (empty($value['absolute']) || $value['absolute'] !== true) {
                 $mayBeLinkWithPath = '/' . $this->config['template'] . $mayBeLink;
             }
@@ -119,7 +161,7 @@ class Template
                 try {
                     $version = random_int(1000000, 9999999);
                 }
-                catch (Exception $e) {}
+                catch (Exception) {}
             }
 
             $mayBeLinkWithPath .= (!empty($version) ? '?' . $version : '');
@@ -145,12 +187,16 @@ class Template
         return true;
     }
 
-    public function getHead($type)
+    /**
+     * @param string $type
+     * @return false|string|array<string, array<string|bool>>
+     */
+    public function getHead(string $type): false|string|array
     {
         return $this->head[$type] ?? false;
     }
 
-    public function setVar($key, $value, $append = false): void
+    public function setVar(string $key, string $value, bool $append = false): void
     {
         if ($append === true) {
             $this->_vars[$key] = ($this->_vars[$key] ?? '' ) . $value;
@@ -160,7 +206,7 @@ class Template
         $this->_vars[$key] = $value;
     }
 
-    public function getVar($key)
+    public function getVar(string $key): ?string
     {
         return $this->_vars[$key] ?? null;
     }
@@ -175,7 +221,7 @@ class Template
         $this->placeVariables();
     }
 
-    private function renderPart($part): void
+    private function renderPart(string $part): void
     {
         $headerFile = DR . '/' . $this->config['template'] . '/' . $part . '.php';
 
@@ -192,7 +238,7 @@ class Template
     {
         preg_match_all('/{{::(.*)::}}/U', $this->fullContent, $modules);
 
-        if (!empty($modules[1]) && is_array($modules[1]) && count($modules[1]) > 0) {
+        if (!empty($modules[1])) {
             foreach ($modules[1] as $one) {
                 $data = explode('::', $one);
                 if (!empty($data[0])) {
@@ -205,7 +251,7 @@ class Template
                     try {
                         $moduleContent = $this->core->runModule($module, $param);
                     } catch (RuntimeException $e) {
-                        Helpers::apre($e->getMessage());
+                        Helpers::aPre($e->getMessage());
                     }
 
                     $this->fullContent = str_replace('{{::' . $one . '::}}', $moduleContent, $this->fullContent);
@@ -214,23 +260,15 @@ class Template
         }
     }
 
-    private static function explodeModuleParam($vars): array
+    /**
+     * @param array<string> $vars
+     * @return array<string, string>
+     */
+    private static function explodeModuleParam(array $vars): array
     {
         $param = [];
 
-        if (!empty($vars) && is_string($vars)) {
-            $tmp = explode('::', $vars);
-            if (count($tmp) > 0) {
-                foreach ($tmp as $one) {
-                    $exp = explode('=', $one);
-                    if (count($exp) === 2) {
-                        $param[$exp[0]] = $exp[1];
-                    }
-                }
-            }
-        }
-
-        if (!empty($vars) && is_array($vars) && count($vars) > 0) {
+        if (!empty($vars)) {
             foreach ($vars as $one) {
                 $exp = explode('=', $one);
                 if (count($exp) === 2) {
@@ -246,7 +284,7 @@ class Template
     {
         preg_match_all('/{{(.*)}}/U', $this->fullContent, $vars);
 
-        if (!empty($vars[1]) && is_array($vars[1]) && count($vars[1]) > 0) {
+        if (!empty($vars[1])) {
             foreach ($vars[1] as $one) {
                 $value = $this->getVar($one);
                 if ($value !== null) {
@@ -256,13 +294,19 @@ class Template
 
                 $this->fullContent = str_replace('{{' . $one . '}}', '', $this->fullContent);
                 if (!empty($_ENV['DEBUG'])) {
-                    Helpers::apre('Content var: ' . $one . ' is not isset');
+                    Helpers::aPre('Content var: ' . $one . ' is not isset');
                 }
             }
         }
     }
 
-    public function module($template, array $params = []): void
+    /**
+     * @param string $template
+     * @param array<string, mixed> $params
+     *
+     * @return void
+     */
+    public function module(string $template, array $params = []): void
     {
         extract($params, EXTR_SKIP);
 

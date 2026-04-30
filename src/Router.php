@@ -1,21 +1,39 @@
 <?php
 namespace CryCMS;
 
+use http\Exception\RuntimeException;
+
 class Router
 {
-    protected $module = '404';
-    protected $config;
+    /** @var array{
+     *     before?: string|array<string>,
+     *     beforeFalse?: string,
+     *     beforeFalseParams?: array<string, string>,
+     *     routes?: array<string, array{module?: string, params?: array{string, string}}>
+     * }
+     */
+    protected array $config;
+    protected string $module = '404';
 
-    public $params = [];
+    /** @var array<string> $params */
+    public array $params = [];
 
-    public function __construct($config, $url)
+    /**
+     * @param array{
+     *      before?: string|array<string>,
+     *      beforeFalse?: string,
+     *      beforeFalseParams?: array<string, string>,
+     *      routes?: array<string, array{module?: string, params?: array{string, string}}>
+     *  } $config
+     * @param array<string> $url
+     */
+    public function __construct(array $config, array $url)
     {
         $this->config = $config;
 
         $this->checkBefore();
 
         if (
-            is_array($config) &&
             array_key_exists('beforeFalse', $config) &&
             $config['beforeFalse'] === $this->module
         ) {
@@ -31,9 +49,13 @@ class Router
             return;
         }
 
+        if (empty($this->config['beforeFalse'])) {
+            throw new RuntimeException('action "beforeFalse" should be defined if "before" is defined');
+        }
+
         if (is_array($this->config['before'])) {
             foreach ($this->config['before'] as $once) {
-                if ($once() === false) {
+                if (is_callable($once) && $once() === false) {
                     $this->module = $this->config['beforeFalse'];
                     if (!empty($this->config['beforeFalseParams'])) {
                         $this->params = $this->config['beforeFalseParams'];
@@ -42,12 +64,17 @@ class Router
                 }
             }
         }
-        elseif ($this->config['before']() === false) {
+        elseif (is_callable($this->config['before']) && $this->config['before']() === false) {
             $this->module = $this->config['beforeFalse'];
         }
     }
 
-    protected function findModuleByRoutes($url): void
+    /**
+     * @param array<string> $url
+     *
+     * @return void
+     */
+    protected function findModuleByRoutes(array $url): void
     {
         if (empty($this->config['routes'])) {
             return;
@@ -64,7 +91,13 @@ class Router
         $this->findModuleByRoutesSlice($url);
     }
 
-    protected function findModuleByRoutesSlice($url, int $sliceCount = 0): void
+    /**
+     * @param array<string> $url
+     * @param int $sliceCount
+     *
+     * @return void
+     */
+    protected function findModuleByRoutesSlice(array $url, int $sliceCount = 0): void
     {
         $slice = array_slice($url, 0, count($url) - $sliceCount);
         if (empty($slice)) {
@@ -83,7 +116,14 @@ class Router
         $this->findModuleByRoutesSlice($url, ($sliceCount + 1));
     }
 
-    protected function findModuleByRoutesOnce($find, $url, $slice): bool
+    /**
+     * @param string $find
+     * @param array<string> $url
+     * @param array<string> $slice
+     *
+     * @return bool
+     */
+    protected function findModuleByRoutesOnce(string $find, array $url, array $slice): bool
     {
         if (isset($this->config['routes'][$find]) && !empty($this->config['routes'][$find]['module'])) {
             $this->module = $this->config['routes'][$find]['module'];

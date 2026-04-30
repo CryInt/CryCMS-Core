@@ -4,21 +4,27 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "459f98730d2e39f7e03d3274a6e14e84",
+    "content-hash": "58aac24fbed2e16fc9d9ea06a3d9d31a",
     "packages": [
         {
             "name": "cry/cry-cms-html",
-            "version": "1.06",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CryInt/CryCMS-HTML.git",
-                "reference": "c38985bc9f11cf317caa92c9f7de2e22bceab15b"
+                "reference": "14bcedde5322c22eb3bc4a3946c817c8227516bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CryInt/CryCMS-HTML/zipball/c38985bc9f11cf317caa92c9f7de2e22bceab15b",
-                "reference": "c38985bc9f11cf317caa92c9f7de2e22bceab15b",
+                "url": "https://api.github.com/repos/CryInt/CryCMS-HTML/zipball/14bcedde5322c22eb3bc4a3946c817c8227516bc",
+                "reference": "14bcedde5322c22eb3bc4a3946c817c8227516bc",
                 "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.1"
             },
             "type": "library",
             "autoload": {
@@ -27,6 +33,9 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Cry.Int",
@@ -36,12 +45,107 @@
             "description": "class for create html from php",
             "support": {
                 "issues": "https://github.com/CryInt/CryCMS-HTML/issues",
-                "source": "https://github.com/CryInt/CryCMS-HTML/tree/1.06"
+                "source": "https://github.com/CryInt/CryCMS-HTML/tree/v2.0.0"
             },
-            "time": "2025-03-31T18:19:31+00:00"
+            "time": "2026-04-30T11:00:44+00:00"
         }
     ],
     "packages-dev": [
+        {
+            "name": "jetbrains/phpstorm-attributes",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JetBrains/phpstorm-attributes.git",
+                "reference": "64de815a4509c29e00d5e3474087fd24c171afc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JetBrains/phpstorm-attributes/zipball/64de815a4509c29e00d5e3474087fd24c171afc2",
+                "reference": "64de815a4509c29e00d5e3474087fd24c171afc2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JetBrains\\PhpStorm\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "JetBrains",
+                    "homepage": "https://www.jetbrains.com"
+                }
+            ],
+            "description": "PhpStorm specific attributes",
+            "keywords": [
+                "attributes",
+                "jetbrains",
+                "phpstorm"
+            ],
+            "support": {
+                "issues": "https://youtrack.jetbrains.com/newIssue?project=WI",
+                "source": "https://github.com/JetBrains/phpstorm-attributes/tree/1.2"
+            },
+            "time": "2024-10-11T10:46:19+00:00"
+        },
+        {
+            "name": "phpstan/phpstan",
+            "version": "2.1.54",
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8be50c3992107dc837b17da4d140fbbdf9a5c5bd",
+                "reference": "8be50c3992107dc837b17da4d140fbbdf9a5c5bd",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "conflict": {
+                "phpstan/phpstan-shim": "*"
+            },
+            "bin": [
+                "phpstan",
+                "phpstan.phar"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan - PHP Static Analysis Tool",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
+            "support": {
+                "docs": "https://phpstan.org/user-guide/getting-started",
+                "forum": "https://github.com/phpstan/phpstan/discussions",
+                "issues": "https://github.com/phpstan/phpstan/issues",
+                "security": "https://github.com/phpstan/phpstan/security/policy",
+                "source": "https://github.com/phpstan/phpstan-src"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ondrejmirtes",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/phpstan",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-04-29T13:31:09+00:00"
+        },
         {
             "name": "roave/security-advisories",
             "version": "dev-latest",
@@ -1101,7 +1205,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.3",
+        "php": ">=8.2",
         "ext-json": "*",
         "ext-mbstring": "*"
     },

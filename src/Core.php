@@ -5,26 +5,30 @@ use RuntimeException;
 
 class Core
 {
-    protected $url = [];
-    protected $configs = [];
-    protected $moduleParams = [];
+    protected array $url = [];
+    protected array $configs = [];
+    protected array $moduleParams = [];
 
-    protected $runningModule;
-    protected $runningModuleParams = [];
+    protected ?string $runningModule;
+    protected array $runningModuleParams = [];
 
-    public $configsPath = 'Configs/';
-    public $modulesPath = 'Modules/';
+    public string $configsPath = 'Configs/';
+    public string $modulesPath = 'Modules/';
 
-    protected $baseUrl;
-    protected $router;
-    protected $template;
+    protected ?string $baseUrl;
+    protected ?Router $router;
+    protected ?Template $template;
 
-    protected $instances = [];
+    protected array $instances = [];
 
-    protected static $_core;
+    protected static Core $_core;
 
-    public function __construct($baseUrl = null)
+    public function __construct(string $baseUrl = null)
     {
+        if (!defined('DR')) {
+            throw new RuntimeException('DR constant should be defined as server document_root', 4);
+        }
+
         if ($baseUrl !== null) {
             $this->baseUrl = $baseUrl;
         }

@@ -1,18 +1,21 @@
 {
     "name": "cry/cry-cms-core",
-    "version": "0.0.7",
+    "version": "2.0.0",
     "description": "just Core",
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=7.3",
-        "cry/cry-cms-html": "1.06",
+        "php": ">=8.2",
+        "cry/cry-cms-html": "^2.0.0",
         "ext-json": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "ext-http": "*"
     }
     ,
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpstan/phpstan": "^2.1",
+        "jetbrains/phpstorm-attributes": "^1.2"
     },
     "autoload": {
         "psr-4": {
