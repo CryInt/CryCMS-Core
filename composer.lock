@@ -4,43 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "459f98730d2e39f7e03d3274a6e14e84",
-    "packages": [
-        {
-            "name": "cry/cry-cms-html",
-            "version": "1.06",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CryInt/CryCMS-HTML.git",
-                "reference": "c38985bc9f11cf317caa92c9f7de2e22bceab15b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/CryInt/CryCMS-HTML/zipball/c38985bc9f11cf317caa92c9f7de2e22bceab15b",
-                "reference": "c38985bc9f11cf317caa92c9f7de2e22bceab15b",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "CryCMS\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Cry.Int",
-                    "email": "cry.int@gmail.com"
-                }
-            ],
-            "description": "class for create html from php",
-            "support": {
-                "issues": "https://github.com/CryInt/CryCMS-HTML/issues",
-                "source": "https://github.com/CryInt/CryCMS-HTML/tree/1.06"
-            },
-            "time": "2025-03-31T18:19:31+00:00"
-        }
-    ],
+    "content-hash": "6aa54a48fc2e45c87be691ae77fecb25",
+    "packages": [],
     "packages-dev": [
         {
             "name": "roave/security-advisories",
