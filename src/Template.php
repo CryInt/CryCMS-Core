@@ -5,16 +5,19 @@ use Exception;
 use RuntimeException;
 
 /**
+ * @phpstan-type elementArrayString array<string, array<string, string>>
+ *
+ * @phpstan-type elementArrayStringOrBool array<string, array<string, string>|array<string, bool>>
+ *
  * @phpstan-type headArray array{
- *     meta?: array<string, array<string, string>>,
- *     css?: array<string, array<string, string|bool>>,
- *     js?: array<string, array<string, string|bool>>,
+ *     meta?: elementArrayStringOrBool,
+ *     css?: elementArrayStringOrBool,
+ *     js?: elementArrayStringOrBool,
  *     favicon?: string,
  *     canonical?: string,
- *     link?: array<string, array<string, string>>
+ *     link?: elementArrayStringOrBool
  * }
  */
-
 class Template
 {
     protected Core $core;
@@ -119,7 +122,7 @@ class Template
     /**
      * @param string $type
      * @param string|null $key
-     * @param string|array<string, string|bool> $value
+     * @param string|elementArrayStringOrBool|array<string, string> $value
      * @return bool
      */
     public function setHead(string $type, ?string $key, string|array $value): bool
@@ -128,6 +131,22 @@ class Template
             return false;
         }
 
+        if (in_array($type, ['meta', 'css', 'js', 'link'], true) && is_array($value)) {
+            if ($key === null) {
+                $this->head[$type] = $value;
+            }
+            else {
+                $this->head[$type][$key] = $value;
+            }
+
+            return true;
+        }
+
+        if ($type === 'favicon' && is_string($value)) {
+            $this->head[$type] = $value;
+        }
+
+        /*
         if (is_array($value)) {
             $mayBeLink = $value['src'] ?? $value['href'] ?? false;
         }
@@ -151,18 +170,7 @@ class Template
                 return false;
             }
 
-            $version = '';
-
-            if (!empty($this->config['vars']['version'])) {
-                $version = $this->config['vars']['version'];
-            }
-
-            if (!empty($_ENV['DEBUG'])) {
-                try {
-                    $version = random_int(1000000, 9999999);
-                }
-                catch (Exception) {}
-            }
+            $version = $this->getVersion();
 
             $mayBeLinkWithPath .= (!empty($version) ? '?' . $version : '');
 
@@ -185,15 +193,18 @@ class Template
         }
 
         return true;
+        */
+
+        return false;
     }
 
     /**
      * @param string $type
-     * @return false|string|array<string, array<string|bool>>
+     * @return null|string|elementArrayStringOrBool
      */
-    public function getHead(string $type): false|string|array
+    public function getHead(string $type): null|string|array
     {
-        return $this->head[$type] ?? false;
+        return $this->head[$type] ?? null;
     }
 
     public function setVar(string $key, string $value, bool $append = false): void
@@ -219,6 +230,24 @@ class Template
 
         $this->runModules();
         $this->placeVariables();
+    }
+
+    protected function getVersion(): string
+    {
+        $version = '';
+
+        if (!empty($this->config['vars']['version'])) {
+            $version = $this->config['vars']['version'];
+        }
+
+        if (!empty($_ENV['DEBUG'])) {
+            try {
+                $version = (string)random_int(1000000, 9999999);
+            }
+            catch (Exception) {}
+        }
+
+        return $version;
     }
 
     private function renderPart(string $part): void
